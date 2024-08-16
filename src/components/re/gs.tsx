@@ -43,17 +43,24 @@ const GameScreen: React.FC<GameScreenProps> = ({ onSpinComplete }) => {
 
   return (
     <Box bg="#0A182A" height="100vh" p={4}>
-      <VStack spacing={8} align="center">
-        <VStack mt={5}>
+      <VStack spacing={10} align="center">
+        {" "}
+        <VStack mt={5} color={"white"}>
+          {" "}
+          <Text
+            color="black"
+            fontSize="md"
+            fontWeight={"bold"}
+            bg={"white"}
+            rounded={"2xl"}
+            p={2}
+          >
+            {spinsLeft} spin left
+          </Text>
           <Heading> Spin the Wheel</Heading>
-          <Text color="white" fontSize="md">
-            Tap on the wheel or press
-          </Text>
-          <Text color="white" fontSize="md">
-            "Spin" to earn
-          </Text>
+          <Text fontSize="md">Tap on the wheel or press</Text>
+          <Text fontSize="md">"Spin" to earn</Text>
         </VStack>
-
         <Box position="relative" width="300px" height="300px">
           <motion.div
             animate={mustSpin ? { scale: [1, 1.05, 1] } : {}}
@@ -71,24 +78,16 @@ const GameScreen: React.FC<GameScreenProps> = ({ onSpinComplete }) => {
               innerBorderColor="orange"
               radiusLineColor="#4FD1C5"
               radiusLineWidth={1}
+              perpendicularText={true}
+              textDistance={70}
               textColors={["#ffffff"]}
               fontSize={30}
               fontWeight={"bold"}
-              backgroundColors={["#2C5282", "#006F67", "#3182CE", "#FC320F"]}
+              backgroundColors={["#006F67", "#FC320F"]}
             />
           </motion.div>
         </Box>
-        <Text
-          color="black"
-          fontSize="md"
-          fontWeight={"bold"}
-          bg={"white"}
-          rounded={"2xl"}
-          p={2}
-        >
-          {spinsLeft} spin left
-        </Text>
-        <HStack spacing={4}>
+        <HStack spacing={4} mt={5}>
           <Button bg="red" color={"#fff"} onClick={() => setSpinsLeft(1)}>
             Reset
           </Button>
