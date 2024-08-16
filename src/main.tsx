@@ -8,7 +8,7 @@ import { TonConnectUIProvider, THEME } from "@tonconnect/ui-react";
 
 
 const manifestUrl =
-  "https://raw.githubusercontent.com/Draysongz/nutswap/main/public/manifest.json";
+  "https://raw.githubusercontent.com/ovpn-dev/ton-spinner/main/public/manifest.json";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
