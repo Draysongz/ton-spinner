@@ -2,11 +2,15 @@ import { useState, useEffect } from "react";
 import LoadingScreen from "./components/re/ls";
 import GameScreen from "./components/re/gs";
 import ResultModal from "./components/re/rm";
+import { useTonConnect } from "./hooks/useTonConnect";
+import { TonConnectButton } from "@tonconnect/ui-react";
 
 const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showResult, setShowResult] = useState<boolean>(false);
   const [prize, setPrize] = useState<number>(0);
+
+const {sender, connected , userAddress} = useTonConnect()
 
   useEffect(() => {
     // Simulate loading time
