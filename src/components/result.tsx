@@ -14,7 +14,17 @@ import {
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 
-const ResultScreen = ({ totalWinnings, spinResults, onPlayAgain }) => {
+interface ResultScreenProps {
+  totalWinnings: number;
+  spinResults: number[];
+  onPlayAgain: () => void;
+}
+
+const ResultScreen: React.FC<ResultScreenProps> = ({
+  totalWinnings,
+  spinResults,
+  onPlayAgain,
+}) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 50 }}
