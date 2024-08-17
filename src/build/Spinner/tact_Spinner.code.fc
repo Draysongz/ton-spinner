@@ -1,0 +1,236 @@
+#pragma version =0.4.4;
+#pragma allow-post-modification;
+#pragma compute-asm-ltr;
+
+#include "tact_Spinner.headers.fc";
+#include "tact_Spinner.stdlib.fc";
+#include "tact_Spinner.constants.fc";
+#include "tact_Spinner.storage.fc";
+
+;;
+;; Contract Spinner functions
+;;
+
+(slice, cell, cell) $Spinner$_contract_init() impure inline_ref {
+    var (($self'owner, $self'depositors, $self'numOfSpin)) = (null(), null(), null());
+    $self'owner = __tact_context_get_sender();
+    return ($self'owner, $self'depositors, $self'numOfSpin);
+}
+
+((slice, cell, cell), slice) $Spinner$_fun_balance((slice, cell, cell) $self) impure inline_ref {
+    var (($self'owner, $self'depositors, $self'numOfSpin)) = $self;
+    return (($self'owner, $self'depositors, $self'numOfSpin), $Int$_fun_toCoinsString(__tact_my_balance()));
+}
+
+((slice, cell, cell), slice) $Spinner$_fun_owner((slice, cell, cell) $self) impure inline_ref {
+    var (($self'owner, $self'depositors, $self'numOfSpin)) = $self;
+    return (($self'owner, $self'depositors, $self'numOfSpin), $self'owner);
+}
+
+((slice, cell, cell), int) $Spinner$_fun_spinleft((slice, cell, cell) $self, slice $sender) impure inline_ref {
+    var (($self'owner, $self'depositors, $self'numOfSpin)) = $self;
+    return (($self'owner, $self'depositors, $self'numOfSpin), __tact_dict_get_slice_int($self'numOfSpin, 267, $sender, 257));
+}
+
+;;
+;; Receivers of a Contract Spinner
+;;
+
+(((slice, cell, cell)), ()) %$Spinner$_internal_empty((slice, cell, cell) $self) impure inline {
+    var ($self'owner, $self'depositors, $self'numOfSpin) = $self;
+    throw_unless(63463, ($Context$_get_value(__tact_context_get()) >= 1000000000));
+    int $spins = 1;
+    if ((~ null?(__tact_dict_get_slice_int($self'numOfSpin, 267, __tact_context_get_sender(), 257)))) {
+        $spins = (__tact_not_null(__tact_dict_get_slice_int($self'numOfSpin, 267, __tact_context_get_sender(), 257)) + 1);
+    }
+    $self'depositors~__tact_dict_set_slice_int(267, __tact_context_get_sender(), true, 1);
+    $self'numOfSpin~__tact_dict_set_slice_int(267, __tact_context_get_sender(), $spins, 257);
+    __tact_debug_str(__gen_slice_string_0a25052c6db1e2b8b47176d515f5ab4730a8f3bc2174fae07756d34ae5c032da(), __gen_slice_string_17ae87b1d5f6e0f6ed08b308af33b009e6fd933db049ec808984e8edc12573d3(), "File contracts/spinner.tact:31:9:");
+    return (($self'owner, $self'depositors, $self'numOfSpin), ());
+}
+
+((slice, cell, cell), ()) $Spinner$_internal_text_5184298ee6b65f423e0100d988343b5a2cb1894fce5ce7aedb11dcf6e63b73d5((slice, cell, cell) $self) impure inline {
+    var ($self'owner, $self'depositors, $self'numOfSpin) = $self;
+    slice $senderAddress = __tact_context_get_sender();
+    throw_unless(15895, (~ null?(__tact_dict_get_slice_int($self'depositors, 267, $senderAddress, 1))));
+    throw_unless(25810, __tact_int_eq_nullable_one(__tact_dict_get_slice_int($self'depositors, 267, $senderAddress, 1), true));
+    throw_unless(54615, (__tact_my_balance() >= 2010000000));
+    $global_send($SendParameters$_constructor_to_bounce_value_mode($senderAddress, true, 2000000000, 2));
+    $self'depositors~__tact_dict_set_slice_int(267, $senderAddress, false, 1);
+    return (($self'owner, $self'depositors, $self'numOfSpin), ());
+}
+
+((slice, cell, cell), ()) $Spinner$_internal_text_5092b5dce0715a57dd969f5fb5a6f93025a0b02eab329470ca2b365ca0d7e93a((slice, cell, cell) $self) impure inline {
+    var ($self'owner, $self'depositors, $self'numOfSpin) = $self;
+    throw_unless(41486, ( __tact_slice_eq_bits($self'owner, __tact_context_get_sender()) ));
+    $global_send($SendParameters$_constructor_to_bounce_value_mode(__tact_context_get_sender(), true, 0, 130));
+    return (($self'owner, $self'depositors, $self'numOfSpin), ());
+}
+
+((slice, cell, cell), ()) $Spinner$_internal_text_beb2935a82089b154d32f99c4377aa960aa115366cc2c602755e36b97f505cec((slice, cell, cell) $self) impure inline {
+    var ($self'owner, $self'depositors, $self'numOfSpin) = $self;
+    throw_unless(37352, ( __tact_slice_eq_bits($self'owner, __tact_context_get_sender()) ));
+    $global_send($SendParameters$_constructor_to_bounce_value_mode(__tact_context_get_sender(), true, ((__tact_my_balance() - $Context$_get_value(__tact_context_get())) - 10000000), 66));
+    return (($self'owner, $self'depositors, $self'numOfSpin), ());
+}
+
+(((slice, cell, cell)), ()) $Spinner$_internal_binary_Withdraw((slice, cell, cell) $self, (int) $msg) impure inline {
+    var ($self'owner, $self'depositors, $self'numOfSpin) = $self;
+    var ($msg'amount) = $msg;
+    throw_unless(12817, ( __tact_slice_eq_bits($self'owner, __tact_context_get_sender()) ));
+    int $amount = min($msg'amount, ((__tact_my_balance() - $Context$_get_value(__tact_context_get())) - 10000000));
+    throw_unless(54615, ($amount > 0));
+    $global_send($SendParameters$_constructor_to_bounce_value_mode(__tact_context_get_sender(), true, $amount, 66));
+    return (($self'owner, $self'depositors, $self'numOfSpin), ());
+}
+
+(((slice, cell, cell)), ()) $Spinner$_internal_binary_TransferOwnership((slice, cell, cell) $self, (slice) $msg) impure inline {
+    var ($self'owner, $self'depositors, $self'numOfSpin) = $self;
+    var ($msg'newOwner) = $msg;
+    throw_unless(28503, ( __tact_slice_eq_bits($self'owner, __tact_context_get_sender()) ));
+    throw_unless(5365, ( ~ __tact_slice_eq_bits($self'owner, $msg'newOwner) ));
+    $self'owner = $msg'newOwner;
+    return (($self'owner, $self'depositors, $self'numOfSpin), ());
+}
+
+((slice, cell, cell), ()) $Spinner$_internal_text_2b55c28f4812d85f68be7da96f0f5e2c82d0178ecbea0cd14cb5d13d8264b63f((slice, cell, cell) $self) impure inline {
+    var ($self'owner, $self'depositors, $self'numOfSpin) = $self;
+    int $numSpin = __tact_dict_get_slice_int($self'numOfSpin, 267, __tact_context_get_sender(), 257);
+    throw_unless(4633, (~ null?($numSpin)));
+    int $updatedNumSpin = (__tact_not_null($numSpin) - 1);
+    $self'numOfSpin~__tact_dict_set_slice_int(267, __tact_context_get_sender(), $updatedNumSpin, 257);
+    return (($self'owner, $self'depositors, $self'numOfSpin), ());
+}
+
+(((slice, cell, cell)), ()) $Spinner$_internal_binary_Deploy((slice, cell, cell) $self, (int) $deploy) impure inline {
+    var ($self'owner, $self'depositors, $self'numOfSpin) = $self;
+    var ($deploy'queryId) = $deploy;
+    ($self'owner, $self'depositors, $self'numOfSpin)~$Spinner$_fun_notify($DeployOk$_store_cell($DeployOk$_constructor_queryId($deploy'queryId)));
+    return (($self'owner, $self'depositors, $self'numOfSpin), ());
+}
+
+;;
+;; Get methods of a Contract Spinner
+;;
+
+_ %balance() method_id(104128) {
+    var self = $Spinner$_contract_load();
+    var res = self~$Spinner$_fun_balance();
+    return res;
+}
+
+_ %owner() method_id(83229) {
+    var self = $Spinner$_contract_load();
+    var res = self~$Spinner$_fun_owner();
+    return res;
+}
+
+_ %spinleft(slice $sender) method_id(115826) {
+    slice $sender = __tact_verify_address($sender);
+    var self = $Spinner$_contract_load();
+    var res = self~$Spinner$_fun_spinleft($sender);
+    return res;
+}
+
+_ lazy_deployment_completed() method_id {
+    return get_data().begin_parse().load_int(1);
+}
+
+;;
+;; Routing of a Contract Spinner
+;;
+
+((slice, cell, cell), int) $Spinner$_contract_router_internal((slice, cell, cell) self, int msg_bounced, slice in_msg) impure inline_ref {
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return (self, true);
+    }
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    
+    
+    ;; Receive empty message
+    if ((op == 0) & (slice_bits(in_msg) <= 32)) {
+        self~%$Spinner$_internal_empty();
+        return (self, true);
+    }
+    
+    ;; Receive Withdraw message
+    if (op == 195467089) {
+        var msg = in_msg~$Withdraw$_load();
+        self~$Spinner$_internal_binary_Withdraw(msg);
+        return (self, true);
+    }
+    
+    ;; Receive TransferOwnership message
+    if (op == 1882669034) {
+        var msg = in_msg~$TransferOwnership$_load();
+        self~$Spinner$_internal_binary_TransferOwnership(msg);
+        return (self, true);
+    }
+    
+    ;; Receive Deploy message
+    if (op == 2490013878) {
+        var msg = in_msg~$Deploy$_load();
+        self~$Spinner$_internal_binary_Deploy(msg);
+        return (self, true);
+    }
+    
+    ;; Text Receivers
+    if (op == 0) {
+        var text_op = slice_hash(in_msg);
+        
+        ;; Receive "withdraw depositor" message
+        if (text_op == 0x5184298ee6b65f423e0100d988343b5a2cb1894fce5ce7aedb11dcf6e63b73d5) {
+            self~$Spinner$_internal_text_5184298ee6b65f423e0100d988343b5a2cb1894fce5ce7aedb11dcf6e63b73d5();
+            return (self, true);
+        }
+        
+        ;; Receive "withdraw all" message
+        if (text_op == 0x5092b5dce0715a57dd969f5fb5a6f93025a0b02eab329470ca2b365ca0d7e93a) {
+            self~$Spinner$_internal_text_5092b5dce0715a57dd969f5fb5a6f93025a0b02eab329470ca2b365ca0d7e93a();
+            return (self, true);
+        }
+        
+        ;; Receive "withdraw safe" message
+        if (text_op == 0xbeb2935a82089b154d32f99c4377aa960aa115366cc2c602755e36b97f505cec) {
+            self~$Spinner$_internal_text_beb2935a82089b154d32f99c4377aa960aa115366cc2c602755e36b97f505cec();
+            return (self, true);
+        }
+        
+        ;; Receive "deduct" message
+        if (text_op == 0x2b55c28f4812d85f68be7da96f0f5e2c82d0178ecbea0cd14cb5d13d8264b63f) {
+            self~$Spinner$_internal_text_2b55c28f4812d85f68be7da96f0f5e2c82d0178ecbea0cd14cb5d13d8264b63f();
+            return (self, true);
+        }
+    }
+    
+    return (self, false);
+}
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = -(msg_flags & 1);
+    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    __tact_context_sender = msg_sender_addr;
+    
+    ;; Load contract data
+    var self = $Spinner$_contract_load();
+    
+    ;; Handle operation
+    int handled = self~$Spinner$_contract_router_internal(msg_bounced, in_msg);
+    
+    ;; Throw if not handled
+    throw_unless(130, handled);
+    
+    ;; Persist state
+    $Spinner$_contract_store(self);
+}

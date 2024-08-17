@@ -1,7 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { VStack, Text, Button, HStack, Heading } from "@chakra-ui/react";
 import { Wheel } from "react-custom-roulette";
 import { motion } from "framer-motion";
+import { TonConnectButton } from "@tonconnect/ui-react";
+import { useTonConnect } from "../../hooks/useTonConnect";
+import { useTonSpinner } from "../../hooks/useTonSpinner";
+
 
 interface GameScreenProps {
   onSpinComplete: (result: string) => void;
@@ -9,9 +13,25 @@ interface GameScreenProps {
 
 const GameScreen: React.FC<GameScreenProps> = ({ onSpinComplete }) => {
   const [mustSpin, setMustSpin] = useState<boolean>(false);
-  const [prizeNumber, setPrizeNumber] = useState<number>(0);
-  const [spinsLeft, setSpinsLeft] = useState<number>(1);
+  const [prizeNumber, setPrizeNumber] = useState<number >(0);
+   const [spinsLeft, setSpinsLeft] = useState<number | undefined>(undefined);
 
+  const { connected, userAddress } = useTonConnect();
+  const { Deposit, spinLeft, deductSpin } = useTonSpinner();
+
+  const buySpin = async () => {
+    if (!connected) return;
+    await Deposit();
+    // setSpinsLeft(1);
+  };
+
+  useEffect(()=>{
+   if(spinLeft != 0){
+     console.log(spinLeft);
+    setSpinsLeft(spinLeft)
+   }
+
+  }, [spinLeft, userAddress])
   const data = [
     { option: "1" },
     { option: "2" },
@@ -28,11 +48,12 @@ const GameScreen: React.FC<GameScreenProps> = ({ onSpinComplete }) => {
   ];
 
   const handleSpinClick = () => {
-    if (spinsLeft > 0) {
+    if (connected && spinsLeft && spinsLeft > 0) {
       const newPrizeNumber = Math.floor(Math.random() * data.length);
       setPrizeNumber(newPrizeNumber);
       setMustSpin(true);
-      setSpinsLeft(spinsLeft - 1);
+      deductSpin()
+      // setSpinsLeft(spinsLeft - 1);
     }
   };
 
@@ -43,6 +64,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ onSpinComplete }) => {
 
   return (
     <VStack bg="#0A182A" height="auto" p={4} spacing={10} align="center">
+      <TonConnectButton />
       <VStack mt={5} color={"white"}>
         <Text
           color="black"
@@ -51,10 +73,11 @@ const GameScreen: React.FC<GameScreenProps> = ({ onSpinComplete }) => {
           bg={"white"}
           rounded={"2xl"}
           p={2}
+          onClick={buySpin}
         >
-          {spinsLeft} spin left
+          {spinsLeft && spinsLeft >= 1 ? `${spinsLeft} spin left` : "Buy one spin"}
         </Text>
-        <Heading> Spin the Wheel</Heading>
+        <Heading>Spin the Wheel</Heading>
         <Text fontSize="md">Tap on the wheel or press</Text>
         <Text fontSize="md">"Spin" to earn</Text>
       </VStack>
@@ -92,7 +115,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ onSpinComplete }) => {
           bg="green"
           color={"#fff"}
           onClick={handleSpinClick}
-          isDisabled={spinsLeft === 0}
+          isDisabled={!connected || spinsLeft === 0}
         >
           Spin
         </Button>
