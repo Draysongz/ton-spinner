@@ -4,10 +4,7 @@ import {
     Address, 
     Builder, 
     beginCell, 
-    ComputeError, 
-    TupleItem, 
     TupleReader, 
-    Dictionary, 
     contractAddress, 
     ContractProvider, 
     Sender, 
@@ -463,6 +460,7 @@ function dictValueParserTransferOwnership(): DictionaryValue<TransferOwnership> 
 function initSpinner_init_args(src: Spinner_init_args) {
     return (builder: Builder) => {
         let b_0 = builder;
+        console.log(src, b_0)
     };
 }
 
@@ -632,5 +630,41 @@ export class Spinner implements Contract {
         let result = source.readBigNumberOpt();
         return result;
     }
+    
+}
+
+export {
+    loadTupleStateInit,
+    storeTupleStateInit,
+    loadGetterTupleStateInit,
+    dictValueParserStateInit,
+    loadTupleContext,
+    storeTupleContext,
+    loadGetterTupleContext,
+    dictValueParserContext,
+    loadTupleSendParameters,
+    storeTupleSendParameters,
+    loadGetterTupleSendParameters,
+    dictValueParserSendParameters,
+    loadTupleDeploy,
+    loadGetterTupleDeploy,
+    storeTupleDeploy,
+    dictValueParserDeploy,
+    loadTupleDeployOk,
+    loadGetterTupleDeployOk,
+    storeTupleDeployOk,
+    dictValueParserDeployOk,
+    loadTupleFactoryDeploy,
+    loadGetterTupleFactoryDeploy,
+    storeTupleFactoryDeploy,
+    dictValueParserFactoryDeploy,
+    loadTupleWithdraw,
+    loadGetterTupleWithdraw,
+    storeTupleWithdraw,
+    dictValueParserWithdraw,
+    loadTupleTransferOwnership,
+    storeTupleTransferOwnership,
+    loadGetterTupleTransferOwnership,
+    dictValueParserTransferOwnership,
     
 }

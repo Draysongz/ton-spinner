@@ -1,4 +1,4 @@
-import { Address, OpenedContract, fromNano, toNano } from "@ton/core";
+import { Address, OpenedContract,  toNano } from "@ton/core";
 import { Spinner } from "../wrappers/Spinner";
 import { useAsyncInitialze } from "./useAsyncInitialize";
 import { useTonClient } from "./useTonClient";
